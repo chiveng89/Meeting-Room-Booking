@@ -20,7 +20,10 @@ use App\Http\Controllers\Frontend\PanolroomController;
 //Backed
 Route::get('/',[HomeController::class, 'homepage']);
 Route::get('/room-detial',[PanolroomController::class, 'room']);
+Route::get('/room-detial/store',[PanolroomController::class, 'store'])-> name('room-detial.store');
+Route::get('/room-detial', [PanolroomController::class, 'table'])->name('room-detial.table');
+// Route::get('/room-detial', [PanolroomController::class, 'show'])->name('room-detial.show');
 
-Route::post('/room-detial/store',[PanolroomController::class, 'store'])->name('room-detial.store');
-// Route::get('/room-details',[RoomController::class, 'index'])->name('room-detail.index');
-// Route::post('/room-details', [RoomController::class, 'store'])->name('room-detail.store');
+
+
+

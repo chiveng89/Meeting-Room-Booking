@@ -16,17 +16,18 @@ return new class extends Migration
 
         Schema::create('panol', function (Blueprint $table) {
             $table->id();
+            $table->string('room');
             $table->string('staff_name');
             $table->string('staff_id');
-            $table->string('staff_department'); // Select input in form
-            $table->string('room'); // Select input in form
+            $table->enum('staff_department',['IT', 'Account', 'Marketing']); // Select input in form
+            $table->enum('meeting_type', ['meeting', 'training']);
+            $table->text('description')->nullable();
             $table->date('date');
             $table->time('start_time');
             $table->time('end_time');
-            $table->enum('meeting_type', ['meeting', 'training']); // Select between 'meeting' or 'training'
-            $table->text('description')->nullable(); // Optional field
             $table->timestamps();
         });
+
     }
 
     /**
