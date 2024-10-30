@@ -1,0 +1,80 @@
+*{
+    box-sizing: border-box;
+    margin: 0;
+}
+body{
+
+    background: url('https://img.freepik.com/free-vector/blue-curve-background_53876-113112.jpg');
+    background-position: center;
+    background-attachment: fixed;
+    background-size: cover;
+    position: relative;
+}
+.card_room {
+    position: relative;
+}
+.card_room .label{
+    clip-path: polygon(50% 0%, 100% 0, 100% 35%, 100% 70%, 50% 100%, 0 100%, 0% 70%, 0% 35%, 0 0);
+    width: 70%;
+    height: 70px;
+    background-color: red;
+    color: white;
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.card_room img{
+    height: 50%;
+
+}
+.card_room  .p-5{
+    height: 50%;
+    display:  flex;
+    justify-content: space-between;
+    flex-direction: column;
+}
+.card_room  .btn_book{
+    width: fit-content;
+}
+
+.input_book{
+    display: none;
+    width: 800px;
+    height: 500px;
+    padding: 20px;
+    background-color: white;
+    border: 1px solid rgb(0, 0, 0);
+    position: fixed;
+    border-radius: 20px ;
+    top: 0;
+    left: 50%;
+    transform: translate(-50%,50%);
+
+}
+.inner_book{
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+.inner_book button{
+    position: absolute;
+    right: 20px;
+    bottom: 20px;
+}
+
+@media  (max-width: 430px) {
+    .input_book{
+        width: 300px;
+        height: auto;
+    }
+    .inner_book button{
+        position: static;
+    }
+}
