@@ -22,12 +22,19 @@ class PanolroomController extends Controller
         ]);
         $conflict = Panol::where('room', $request->input('room'))
         ->where('date', $request->input('date'))
-        ->where('start_time', $request->input('start_time'))
+        ->where(function($query) use ($request) {
+            $query->whereBetween('start_time', [$request->input('start_time'), $request->input('end_time')])
+                  ->orWhereBetween('end_time', [$request->input('start_time'), $request->input('end_time')])
+                  ->orWhere(function ($query) use ($request) {
+                      $query->where('start_time', '<=', $request->input('start_time'))
+                            ->where('end_time', '>=', $request->input('end_time'));
+                  });
+        })
         ->exists();
 
     if ($conflict) {
-        // Return to the previous page without saving if a conflict exists
-        return redirect()->back()->with('error', 'This room is already booked at this time.');
+        // Return to the previous page with an error message if a conflict exists
+        return redirect()->back()->with('error', 'This room is already booked at the selected time.');
     }
         Panol::create([
             'room' => $request->input('room'),

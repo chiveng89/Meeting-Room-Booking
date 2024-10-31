@@ -20,8 +20,9 @@
 
 <!-- Form input  -->
 @if(session('success'))
-    <div class="alert alert-success">
+    <div class="alert alert-success bg-white w-75 shadow-lg ">
         {{ session('success') }}
+        <i class="fa-regular fa-circle-check" style="color: #1cca47;"></i>
     </div>
 @endif
 <div class="room-booking p-10  ">
@@ -92,16 +93,27 @@
                 </div>
                 <div>
                     <label for="end_time" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray">End Time <span class="text-rose-600">*</span></label>
-                    <input type="time" id="end_time" name="end_time" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-white-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
+                    <input type="time" id="end_time" name="end_time" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-white-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray dark:focus:ring-blue-500 dark:border-blue-500" required />
                 </div>
             </div>
 
             <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Book</button>
         </div>
     </form>
+    @if(session('error'))
+        <div class="alert alert-error bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+            {{ session('error') }}
+            <span class="absolute top-0 bottom-0 right-0 px-4 py-3" onclick="this.parentElement.style.display='none';">
+                <svg class="fill-current h-6 w-6 text-red-500" role="button" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                    <path d="M14.348 14.849a1 1 0 001.415 0l.707-.707a1 1 0 000-1.415L11.415 10l4.05-4.05a1 1 0 000-1.415l-.707-.707a1 1 0 00-1.415 0L10 7.585l-4.05-4.05a1 1 0 00-1.415 0l-.707.707a1 1 0 000 1.415L7.585 10l-4.05 4.05a1 1 0 000 1.415l.707.707a1 1 0 001.415 0L10 12.415l4.348 4.434z"/>
+                </svg>
+            </span>
+        </div>
+    @endif
+
     <div class="m-popup bg-white shadow w-16">
         <div class="">
-            <i class="fa-regular fa-circle-check" style="color: #1cca47;"></i>
+
         </div>
         <div class="">
             <p></p>
@@ -251,50 +263,35 @@ document.getElementById('date').addEventListener('change', function() {
         booking.date === selectedDate && booking.room === selectedRoom
     );
 
-    // Populate start time dropdown
-    const allTimes = generateTimeOptions(); // Function to generate all time options (you need to implement this)
+    document.getElementById('date').addEventListener('change', function() {
+    const date = this.value;
+    const room = document.getElementById('room').value; // Assume 'room' has a value
 
-    allTimes.forEach(time => {
-        // If there's a conflict, disable the start time
-        if (!conflicts.some(booking => booking.start_time === time)) {
-            const option = document.createElement('option');
-            option.value = time;
-            option.textContent = time;
-            document.getElementById('start_time').appendChild(option);
-        }
-    });
+    fetch(`/check-availability?date=${date}&room=${room}`)
+        .then(response => response.json())
+        .then(data => {
+            const startTimeInput = document.getElementById('start_time');
+            const endTimeInput = document.getElementById('end_time');
 
-    // Populate end time dropdown (this will depend on your requirements)
-    // Make sure to implement similar logic to check for end time conflicts based on start_time selection
+            // Reset time inputs
+            startTimeInput.value = '';
+            endTimeInput.value = '';
+            startTimeInput.disabled = false;
+            endTimeInput.disabled = false;
+
+            // Disable times that overlap with unavailable slots
+            data.forEach(slot => {
+                const start = slot.start_time;
+                const end = slot.end_time;
+
+                // Logic to disable overlapping time slots
+                if (/* check for overlap with selected time */) {
+                    startTimeInput.disabled = true;
+                    endTimeInput.disabled = true;
+                }
+            });
+        })
+        .catch(error => console.error('Error fetching availability:', error));
 });
-
-function generateTimeOptions() {
-    const times = [];
-    // Generate a list of times from your desired range (e.g., 8:00 AM to 5:00 PM)
-    for (let hour = 8; hour < 18; hour++) {
-        for (let minute = 0; minute < 60; minute += 30) { // Assuming 30-minute intervals
-            const time = `${hour}:${minute < 10 ? '0' : ''}${minute}`;
-            times.push(time);
-        }
-    }
-    return times;
-}
-    function openModal(booking) {
-        document.getElementById("modalStaffName").innerText = booking.staff_name;
-        document.getElementById("modalStaffId").innerText = booking.staff_id;
-        document.getElementById("modalStaffDepartment").innerText = booking.staff_department;
-        document.getElementById("modalRoom").innerText = booking.room;
-        document.getElementById("modalDate").innerText = booking.date;
-        document.getElementById("modalStartTime").innerText = booking.start_time;
-        document.getElementById("modalEndTime").innerText = booking.end_time;
-        document.getElementById("modalMeetingType").innerText = booking.meeting_type;
-        document.getElementById("modalDescription").innerText = booking.description;
-
-        document.getElementById("detailModal").classList.remove("hidden");
-    }
-
-    function closeModal() {
-        document.getElementById("detailModal").classList.add("hidden");
-    }
 </script>
 @endsection

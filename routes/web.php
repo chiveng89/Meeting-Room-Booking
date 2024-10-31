@@ -23,7 +23,7 @@ Route::get('/room-detial',[PanolroomController::class, 'room']);
 Route::get('/room-detial/store',[PanolroomController::class, 'store'])-> name('room-detial.store');
 Route::get('/room-detial', [PanolroomController::class, 'table'])->name('room-detial.table');
 // Route::get('/room-detial', [PanolroomController::class, 'show'])->name('room-detial.show');
-
+Route::get('/check-availability', [PanolroomController::class, 'checkAvailability'])->name('check-availability');
 
 
 
